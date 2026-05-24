@@ -1,0 +1,57 @@
+.footer{
+
+background:#0f172a;
+
+color:white;
+
+padding:40px 40px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+margin-top:60px;
+
+}
+
+.footer p{
+
+font-size:18px;
+
+letter-spacing:1px;
+
+color:#cbd5e1;
+
+}
+
+/* Hover effect */
+
+.footer:hover{
+
+background:#111827;
+
+transition:0.3s;
+
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.footer{
+
+padding:20px 20px;
+
+text-align:center;
+
+}
+
+.footer p{
+
+font-size:16px;
+
+}
+
+}

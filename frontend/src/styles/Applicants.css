@@ -1,0 +1,23 @@
+.apps{
+
+padding:50px;
+
+}
+
+.candidate{
+
+background:white;
+
+padding:30px;
+
+margin-bottom:20px;
+
+border-radius:20px;
+
+}
+
+.candidate button{
+
+margin-right:10px;
+
+}

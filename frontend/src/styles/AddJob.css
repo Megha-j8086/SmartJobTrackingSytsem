@@ -1,0 +1,29 @@
+.add{
+
+padding:60px;
+
+}
+
+.add input{
+
+display:block;
+
+width:100%;
+
+padding:16px;
+
+margin-bottom:20px;
+
+}
+
+.add button{
+
+padding:16px;
+
+background:#3658ff;
+
+color:white;
+
+border:none;
+
+}

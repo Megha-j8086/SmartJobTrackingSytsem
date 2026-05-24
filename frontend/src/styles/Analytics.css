@@ -1,0 +1,29 @@
+.analytics-page{
+
+padding:60px;
+
+}
+
+.analytics-page .cards{
+
+display:grid;
+
+grid-template-columns:
+repeat(
+3,
+1fr
+);
+
+gap:25px;
+
+}
+
+.analytics-page .cards div{
+
+background:white;
+
+padding:40px;
+
+border-radius:20px;
+
+}
