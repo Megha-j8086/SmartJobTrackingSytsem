@@ -1,48 +1,66 @@
+import React,{
+useEffect,
+useState
+} from "react";
+
+import API from "../../api/api";
+
 import "../../styles/Applications.css";
-
-const applications=[
-
-{
-id:1,
-job:"Frontend Developer",
-company:"Google",
-status:"Applied"
-},
-
-{
-id:2,
-job:"Python Developer",
-company:"Microsoft",
-status:"Interview"
-},
-
-{
-id:3,
-job:"Backend Developer",
-company:"Amazon",
-status:"Rejected"
-},
-
-{
-id:4,
-job:"React Developer",
-company:"Meta",
-status:"Selected"
-}
-
-];
 
 function Applications(){
 
+const[
+applications,
+setApplications
+]=useState([]);
+
+useEffect(()=>{
+
+loadApplications();
+
+},[]);
+
+const loadApplications=
+async()=>{
+
+try{
+
+const res=
+await API.get(
+"/my-applications/"
+);
+
+setApplications(
+res.data
+);
+
+}
+
+catch(error){
+
+console.log(
+error.response?.data
+);
+
+}
+
+};
+
 const getClass=(status)=>{
 
-if(status==="Applied")
+if(
+status==="pending"
+)
 return "applied";
 
-if(status==="Interview")
+if(
+status==="review"
+)
 return "interview";
 
-if(status==="Rejected")
+if(
+status==="rejected"
+)
 return "rejected";
 
 return "selected";
@@ -69,15 +87,39 @@ Track your job progress
 
 <div className="head">
 
-<span>Job</span>
+<span>
 
-<span>Company</span>
+Job
 
-<span>Status</span>
+</span>
+
+<span>
+
+Company
+
+</span>
+
+<span>
+
+Status
+
+</span>
 
 </div>
 
 {
+
+applications.length===0
+
+?
+
+<div className="empty">
+
+No Applications Found
+
+</div>
+
+:
 
 applications.map(
 
@@ -90,7 +132,7 @@ className="row"
 
 <span>
 
-{app.job}
+{app.job_title}
 
 </span>
 
@@ -124,8 +166,8 @@ app.status
 
 </div>
 
-)
+);
 
 }
 
-export default Applications
+export default Applications;

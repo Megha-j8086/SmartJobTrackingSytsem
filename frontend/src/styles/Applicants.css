@@ -1,23 +1,44 @@
-.apps{
+.applicants{
 
-padding:50px;
+padding:40px;
 
 }
 
-.candidate{
+.card{
 
 background:white;
 
-padding:30px;
+padding:20px;
 
 margin-bottom:20px;
 
-border-radius:20px;
+border-radius:12px;
+
+box-shadow:
+0 4px 12px
+rgba(
+0,
+0,
+0,
+0.08
+);
 
 }
 
-.candidate button{
+.card button{
 
 margin-right:10px;
+
+padding:10px;
+
+cursor:pointer;
+
+}
+
+.card a{
+
+display:block;
+
+margin:10px 0;
 
 }

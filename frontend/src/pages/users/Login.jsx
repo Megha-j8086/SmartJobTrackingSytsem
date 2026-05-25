@@ -1,12 +1,12 @@
 import React,{
 useState
-}
-from "react";
+} from "react";
 
 import {
 useNavigate
-}
-from "react-router-dom";
+} from "react-router-dom";
+
+import API from "../../api/api";
 
 import "../../styles/Login.css";
 
@@ -16,8 +16,8 @@ const navigate=
 useNavigate();
 
 const[
-email,
-setEmail
+username,
+setUsername
 ]=useState("");
 
 const[
@@ -25,22 +25,80 @@ password,
 setPassword
 ]=useState("");
 
-const login=()=>{
+const login=
+async()=>{
 
-const user=
+try{
 
-JSON.parse(
+const res=
+await API.post(
 
-localStorage.getItem(
-"user"
+"/login/",
+
+{
+
+username,
+password
+
+}
+
+);
+
+localStorage.setItem(
+
+"access",
+
+res.data.access
+
+);
+
+localStorage.setItem(
+
+"refresh",
+
+res.data.refresh
+
+);
+
+const profile=
+await API.get(
+
+"/profile/",
+
+{
+
+headers:{
+
+Authorization:
+
+`Bearer ${res.data.access}`
+
+}
+
+}
+
+);
+
+localStorage.setItem(
+
+"user",
+
+JSON.stringify(
+profile.data
 )
 
 );
 
-if(!user){
-
 alert(
-"No account found"
+"Login Success"
+);
+
+if(
+profile.data.role==="user"
+){
+
+navigate(
+"/dashboard"
 );
 
 return;
@@ -48,75 +106,41 @@ return;
 }
 
 if(
-
-user.email===email &&
-
-user.password===password
-
-){
-
-/* SAVE SESSION */
-
-localStorage.setItem(
-
-"userRole",
-
-user.role
-
-);
-
-localStorage.setItem(
-
-"isLoggedIn",
-
-true
-
-);
-
-alert(
-
-"Login Successful"
-
-);
-
-/* REDIRECT */
-
-if(
-user.role==="user"
-){
-
-navigate(
-"/dashboard"
-);
-
-}
-
-else if(
-user.role==="recruiter"
+profile.data.role==="recruiter"
 ){
 
 navigate(
 "/recruiter"
 );
 
+return;
+
 }
 
-else if(
-user.role==="admin"
+if(
+profile.data.role==="admin"
 ){
 
 navigate(
 "/admin"
 );
 
-}
+return;
 
 }
 
-else{
+navigate("/");
+
+}
+
+catch(error){
+
+console.log(
+error.response?.data
+);
 
 alert(
-"Invalid Email or Password"
+"Invalid Login"
 );
 
 }
@@ -136,16 +160,14 @@ Login
 </h1>
 
 <input
-type="email"
-placeholder="Email"
-value={email}
+type="text"
+placeholder="Username"
+value={username}
 onChange={
 (e)=>
-
-setEmail(
+setUsername(
 e.target.value
 )
-
 }
 />
 
@@ -155,11 +177,9 @@ placeholder="Password"
 value={password}
 onChange={
 (e)=>
-
 setPassword(
 e.target.value
 )
-
 }
 />
 
@@ -173,7 +193,7 @@ Login
 
 <p>
 
-Don't have account?
+No account?
 
 <span
 onClick={()=>
@@ -193,8 +213,8 @@ navigate(
 
 </div>
 
-)
+);
 
 }
 
-export default Login
+export default Login;

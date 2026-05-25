@@ -6,6 +6,8 @@ import {
 useNavigate
 } from "react-router-dom";
 
+import API from "../../api/api";
+
 import "../../styles/Register.css";
 
 function Register(){
@@ -18,7 +20,7 @@ form,
 setForm
 ]=useState({
 
-name:"",
+username:"",
 email:"",
 password:"",
 role:""
@@ -34,15 +36,16 @@ setForm({
 [e.target.name]:
 e.target.value
 
-})
+});
 
 };
 
-const register=()=>{
+const register=
+async()=>{
 
 if(
 
-!form.name ||
+!form.username ||
 
 !form.email ||
 
@@ -60,13 +63,13 @@ return;
 
 }
 
-localStorage.setItem(
+try{
 
-"user",
+await API.post(
 
-JSON.stringify(
+"/register/",
+
 form
-)
 
 );
 
@@ -77,6 +80,20 @@ alert(
 navigate(
 "/login"
 );
+
+}
+
+catch(err){
+
+console.log(
+err.response?.data
+);
+
+alert(
+"Registration Failed"
+);
+
+}
 
 };
 
@@ -93,9 +110,9 @@ Create Account
 </h1>
 
 <input
-name="name"
+name="username"
 type="text"
-placeholder="Full Name"
+placeholder="Username"
 onChange={change}
 />
 
@@ -162,7 +179,9 @@ Already registered?
 
 <span
 onClick={()=>
-navigate("/login")
+navigate(
+"/login"
+)
 }
 >
 
@@ -176,8 +195,8 @@ navigate("/login")
 
 </div>
 
-)
+);
 
 }
 
-export default Register
+export default Register;

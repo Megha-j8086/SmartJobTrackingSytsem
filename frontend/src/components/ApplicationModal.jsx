@@ -2,6 +2,8 @@ import React,{
 useState
 } from "react";
 
+import API from "../api/api";
+
 import "../styles/ApplicationModal.css";
 
 function ApplicationModal({
@@ -47,11 +49,12 @@ files
 ? files[0]
 : value
 
-})
+});
 
 };
 
-const handleSubmit=()=>{
+const handleSubmit=
+async()=>{
 
 if(
 
@@ -73,10 +76,99 @@ return;
 
 }
 
-submit(
-job.id,
-form
+try{
+
+const data=
+new FormData();
+
+data.append(
+"job",
+job.id
 );
+
+data.append(
+"resume",
+form.resume
+);
+
+data.append(
+
+"experience",
+
+form.experience
+? parseInt(
+form.experience
+)
+: 0
+
+);
+
+data.append(
+"skills",
+form.skills
+);
+
+data.append(
+"linkedin",
+form.linkedin
+);
+
+data.append(
+"projects",
+form.projects
+);
+
+const res=
+
+await API.post(
+
+"/apply/",
+
+data,
+
+{
+
+headers:{
+
+"Content-Type":
+
+"multipart/form-data"
+
+}
+
+}
+
+);
+
+console.log(
+res.data
+);
+
+alert(
+"Application Submitted"
+);
+
+submit(
+null
+);
+
+}
+
+catch(error){
+
+console.log(
+error.response?.data
+);
+
+alert(
+
+JSON.stringify(
+error.response?.data
+)
+
+);
+
+}
 
 };
 
@@ -113,8 +205,10 @@ onChange={change}
 />
 
 <input
+type="number"
 name="experience"
 placeholder="Experience (Years)"
+min="0"
 onChange={change}
 />
 
@@ -182,8 +276,8 @@ Submit Application
 
 </div>
 
-)
+);
 
 }
 
-export default ApplicationModal
+export default ApplicationModal;

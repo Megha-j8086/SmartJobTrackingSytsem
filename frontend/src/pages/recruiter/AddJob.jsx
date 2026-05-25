@@ -1,52 +1,127 @@
 import React,{
 useState
-}
-from "react";
+} from "react";
+
+import {
+useNavigate
+} from "react-router-dom";
+
+import API from "../../api/api";
 
 import "../../styles/AddJob.css";
 
 function AddJob(){
 
+const navigate=
+useNavigate();
+
 const[
-job,
-setJob
+form,
+setForm
 ]=useState({
 
 title:"",
 company:"",
 location:"",
+experience:"",
+description:"",
 deadline:""
 
 });
 
 const change=(e)=>{
 
-setJob({
+setForm({
 
-...job,
+...form,
 
 [e.target.name]:
 e.target.value
 
-})
+});
 
 };
 
-const save=()=>{
+const add=
+async()=>{
+const add=async()=>{
+
+console.log(
+localStorage.getItem(
+"access"
+)
+);
+
+try{
+
+await API.post(
+"/jobs/",
+form
+);
 
 alert(
 "Job Added Successfully"
 );
 
+navigate(
+"/recruiter"
+);
+
+}
+
+catch(error){
+
+console.log(
+error.response?.data
+);
+
+}
+
+};
+
+try{
+
+await API.post(
+
+"/jobs/",
+
+form
+
+);
+
+alert(
+"Job Added Successfully"
+);
+
+navigate(
+"/recruiter"
+);
+
+}
+
+catch(error){
+
+console.log(
+error.response?.data
+);
+
+alert(
+"Failed to Add Job"
+);
+
+}
+
 };
 
 return(
 
-<div className="add">
+<div className="add-job">
+
+<div className="job-box">
 
 <h1>
 
-Add New Job
+Create New Job
 
 </h1>
 
@@ -58,7 +133,7 @@ onChange={change}
 
 <input
 name="company"
-placeholder="Company"
+placeholder="Company Name"
 onChange={change}
 />
 
@@ -67,23 +142,25 @@ name="location"
 placeholder="Location"
 onChange={change}
 />
-<input
-name="skills"
-placeholder="Skills"
-onChange={change}
-/>
 
 <input
 name="experience"
-placeholder="Experience"
+placeholder="Experience Required"
 onChange={change}
 />
 
-<input
+<textarea
 name="description"
-placeholder="Description"
+placeholder="Job Description"
+rows="5"
 onChange={change}
 />
+
+<label>
+
+Application Deadline
+
+</label>
 
 <input
 type="date"
@@ -91,18 +168,40 @@ name="deadline"
 onChange={change}
 />
 
+<div className="buttons">
+
 <button
-onClick={save}
+type="button"
+className="cancel"
+onClick={()=>
+navigate(
+"/recruiter"
+)
+}
 >
 
-Post Job
+Cancel
+
+</button>
+
+<button
+type="button"
+className="submit"
+onClick={add}
+>
+
+Publish Job
 
 </button>
 
 </div>
 
-)
+</div>
+
+</div>
+
+);
 
 }
 
-export default AddJob
+export default AddJob;

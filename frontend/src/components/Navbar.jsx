@@ -1,14 +1,9 @@
-import React,{
-useEffect,
-useState
-}
-from "react";
+import React from "react";
 
 import {
 Link,
 useNavigate
-}
-from "react-router-dom";
+} from "react-router-dom";
 
 import "../styles/Navbar.css";
 
@@ -17,84 +12,52 @@ function Navbar(){
 const navigate=
 useNavigate();
 
-const[
-loggedIn,
-setLoggedIn
-]=useState(false);
-
-useEffect(()=>{
-
 const user=
-
+JSON.parse(
 localStorage.getItem(
-"isLoggedIn"
+"user"
+)
 );
-
-if(user)
-
-if(user){
-
-setLoggedIn(true);
-
-}
-
-},[]);
 
 const logout=()=>{
 
 localStorage.removeItem(
-"userRole"
+"access"
 );
 
 localStorage.removeItem(
-"isLoggedIn"
+"refresh"
 );
 
-alert(
-"Logged out"
+localStorage.removeItem(
+"user"
 );
 
 navigate("/");
 
-window.location.reload();
-
 };
 
-const openDashboard=()=>{
+const dashboardRoute=()=>{
 
-const role=
+if(!user)
+return "/";
 
-localStorage.getItem(
-"userRole"
-);
+if(
+user.role==="user"
+)
+return "/dashboard";
 
-if(role==="user"){
+if(
+user.role==="recruiter"
+)
+return "/recruiter";
 
-navigate(
-"/dashboard"
-);
+if(
+user.role==="admin"
+)
+return "/admin";
 
-}
-
-else if(
-role==="recruiter"
-){
-
-navigate(
-"/recruiter"
-);
-
-}
-
-else if(
-role==="admin"
-){
-
-navigate(
-"/admin"
-);
-
-}
+return "/";
 
 };
 
@@ -145,31 +108,29 @@ About Us
 
 </li>
 
-{
-
-loggedIn &&
-
-<li
-onClick={
-openDashboard
-}
->
-
-Dashboard
-
-</li>
-
-}
-
-{
-
-!loggedIn &&
-
 <li>
 
 <Link to="/track">
 
 Track Jobs
+
+</Link>
+
+</li>
+
+{
+
+user &&
+
+<li>
+
+<Link
+to={
+dashboardRoute()
+}
+>
+
+Dashboard
 
 </Link>
 
@@ -183,7 +144,20 @@ Track Jobs
 
 {
 
-!loggedIn ?
+user
+
+?
+
+<button
+className="logout"
+onClick={logout}
+>
+
+Logout
+
+</button>
+
+:
 
 <>
 
@@ -211,25 +185,14 @@ Register
 
 </>
 
-:
-
-<button
-className="logout"
-onClick={logout}
->
-
-Logout
-
-</button>
-
 }
 
 </div>
 
 </nav>
 
-)
+);
 
 }
 
-export default Navbar
+export default Navbar;

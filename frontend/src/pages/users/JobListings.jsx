@@ -1,123 +1,84 @@
 import React,{
+useEffect,
 useState
 } from "react";
+
+import API from "../../api/api";
 
 import ApplicationModal from "../../components/ApplicationModal";
 
 import "../../styles/JobListings.css";
 
-const jobs=[
-
-{
-id:1,
-title:"Frontend Developer",
-company:"Google",
-deadline:"2026-05-30"
-},
-
-{
-id:2,
-title:"Python Developer",
-company:"Microsoft",
-deadline:"2026-06-10"
-},
-
-{
-id:3,
-title:"Backend Developer",
-company:"Amazon",
-deadline:"2026-05-28"
-}
-
-];
-
 function JobListings(){
 
 const[
-selectedJob,
-setSelectedJob
-]=useState(null);
-
-const[
-applied,
-setApplied
+jobs,
+setJobs
 ]=useState([]);
 
-const openApply=(job)=>{
+const[
+selected,
+setSelected
+]=useState(null);
 
-if(
-applied.includes(
-job.id
+useEffect(()=>{
+
+loadJobs();
+
+},[]);
+
+const loadJobs=
+async()=>{
+
+try{
+
+const res=
+await API.get(
+
+"/jobs/",
+
+{
+
+headers:{
+
+Authorization:
+
+`Bearer ${
+localStorage.getItem(
+"access"
 )
-){
-
-alert(
-"Already Applied"
-);
-
-return;
+}`
 
 }
 
-const today=
-new Date();
+}
 
-const deadline=
-new Date(
-job.deadline
 );
 
-if(
-today>deadline
-){
-
-alert(
-"Application Closed"
+setJobs(
+res.data
 );
-
-return;
 
 }
 
-setSelectedJob(
-job
+catch(error){
+
+console.log(
+error
 );
+
+}
 
 };
 
-const submit=(id,data)=>{
-
-if(id===null){
-
-alert(
-"Application cancelled"
-);
-
-setSelectedJob(
-null
-);
-
-return;
-
-}
-
-setApplied([
-
-...applied,
-
-id
-
-]);
-
-console.log(
-data
-);
+const submit=
+(jobId,form)=>{
 
 alert(
-"Application Submitted Successfully"
+"Application Submitted"
 );
 
-setSelectedJob(
+setSelected(
 null
 );
 
@@ -133,7 +94,7 @@ Available Jobs
 
 </h1>
 
-<div className="jobs-grid">
+<div className="job-grid">
 
 {
 
@@ -154,21 +115,32 @@ className="job-card"
 
 <p>
 
-{job.company}
+🏢 {job.company}
+
+</p>
+
+<p>
+
+📍 {job.location}
+
+</p>
+
+<p>
+
+{job.description}
 
 </p>
 
 <p>
 
 Deadline:
-
 {job.deadline}
 
 </p>
 
 <button
 onClick={()=>
-openApply(
+setSelected(
 job
 )
 }
@@ -190,11 +162,11 @@ Apply
 
 {
 
-selectedJob &&
+selected &&
 
 <ApplicationModal
 
-job={selectedJob}
+job={selected}
 
 submit={submit}
 
@@ -204,8 +176,8 @@ submit={submit}
 
 </div>
 
-)
+);
 
 }
 
-export default JobListings
+export default JobListings;

@@ -1,8 +1,19 @@
 import React from "react";
 
+import {
+BrowserRouter,
+Routes,
+Route
+} from "react-router-dom";
+
+/* ROUTE GUARD */
+import PrivateRoute from "./routes/PrivateRoute";
+
+/* COMMON COMPONENTS */
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+/* PUBLIC PAGES */
 import Home from "./pages/users/Home";
 import About from "./pages/users/About";
 import Features from "./components/Features";
@@ -10,30 +21,24 @@ import TrackJobs from "./pages/users/TrackJobs";
 
 import Login from "./pages/users/Login";
 import Register from "./pages/users/Register";
+
+/* USER PAGES */
 import Dashboard from "./pages/users/Dashboard";
-
-import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
-
-import AdminDashboard from "./pages/admin/AdminDashboard";
 import JobListings from "./pages/users/JobListings";
 import Applications from "./pages/users/Applications";
 import Profile from "./pages/users/Profile";
-import AddJob from "./pages/recruiter/AddJob";
 
+/* RECRUITER PAGES */
+import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
+import AddJob from "./pages/recruiter/AddJob";
 import Applicants from "./pages/recruiter/Applicants";
 
+/* ADMIN PAGES */
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
-
 import ManageRecruiters from "./pages/admin/ManageRecruiters";
-
 import ManageApplications from "./pages/admin/ManageApplications";
-
 import Analytics from "./pages/admin/Analytics";
-import {
-BrowserRouter,
-Routes,
-Route
-} from "react-router-dom";
 
 function App(){
 
@@ -45,103 +50,133 @@ return(
 
 <Routes>
 
-<Route
-path="/"
-element={<Home/>}
-/>
+{/* PUBLIC ROUTES */}
+<Route path="/" element={<Home/>}/>
+<Route path="/about" element={<About/>}/>
+<Route path="/features" element={<Features/>}/>
+<Route path="/track" element={<TrackJobs/>}/>
+<Route path="/login" element={<Login/>}/>
+<Route path="/register" element={<Register/>}/>
 
-<Route
-path="/about"
-element={<About/>}
-/>
-
-<Route
-path="/features"
-element={<Features/>}
-/>
-
-<Route
-path="/track"
-element={<TrackJobs/>}
-/>
-<Route
-path="/login"
-element={<Login/>}
-/>
-
-<Route
-path="/register"
-element={<Register/>}
-/>
+{/* USER PROTECTED ROUTES */}
 <Route
 path="/dashboard"
-element={<Dashboard/>}
-/>
-
-<Route
-path="/recruiter"
-element={<RecruiterDashboard/>}
-/>
-
-<Route
-path="/admin"
-element={<AdminDashboard/>}
+element={
+<PrivateRoute allowedRole="user">
+<Dashboard/>
+</PrivateRoute>
+}
 />
 
 <Route
 path="/jobs"
-element={<JobListings/>}
+element={
+<PrivateRoute allowedRole="user">
+<JobListings/>
+</PrivateRoute>
+}
 />
 
 <Route
 path="/applications"
-element={<Applications/>}
+element={
+<PrivateRoute allowedRole="user">
+<Applications/>
+</PrivateRoute>
+}
 />
 
 <Route
 path="/profile"
-element={<Profile/>}
+element={
+<PrivateRoute allowedRole="user">
+<Profile/>
+</PrivateRoute>
+}
 />
 
+{/* RECRUITER PROTECTED ROUTES */}
+<Route
+path="/recruiter"
+element={
+<PrivateRoute allowedRole="recruiter">
+<RecruiterDashboard/>
+</PrivateRoute>
+}
+/>
 
 <Route
 path="/add-job"
-element={<AddJob/>}
+element={
+<PrivateRoute allowedRole="recruiter">
+<AddJob/>
+</PrivateRoute>
+}
 />
 
 <Route
 path="/applicants"
-element={<Applicants/>}
+element={
+<PrivateRoute allowedRole="recruiter">
+<Applicants/>
+</PrivateRoute>
+}
 />
 
+{/* ADMIN PROTECTED ROUTES */}
+<Route
+path="/admin"
+element={
+<PrivateRoute allowedRole="admin">
+<AdminDashboard/>
+</PrivateRoute>
+}
+/>
 
 <Route
 path="/manage-users"
-element={<ManageUsers/>}
+element={
+<PrivateRoute allowedRole="admin">
+<ManageUsers/>
+</PrivateRoute>
+}
 />
 
 <Route
 path="/manage-recruiters"
-element={<ManageRecruiters/>}
+element={
+<PrivateRoute allowedRole="admin">
+<ManageRecruiters/>
+</PrivateRoute>
+}
 />
 
 <Route
 path="/manage-applications"
-element={<ManageApplications/>}
+element={
+<PrivateRoute allowedRole="admin">
+<ManageApplications/>
+</PrivateRoute>
+}
 />
 
 <Route
 path="/analytics"
-element={<Analytics/>}
+element={
+<PrivateRoute allowedRole="admin">
+<Analytics/>
+</PrivateRoute>
+}
 />
+
 </Routes>
 
 <Footer/>
 
 </BrowserRouter>
 
-)
+);
 
 }
 
-export default App
+export default App;

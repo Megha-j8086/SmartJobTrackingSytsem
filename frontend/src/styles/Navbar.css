@@ -236,6 +236,26 @@ rgba(
 );
 
 }
+.logout{
+    padding:15px 30px;
+
+border:none;
+
+border-radius:14px;
+
+background:red;
+
+
+color:white;
+
+font-size:16px;
+
+font-weight:700;
+
+cursor:pointer;
+
+}
+
 
 /* RESPONSIVE */
 
