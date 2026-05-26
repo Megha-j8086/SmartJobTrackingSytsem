@@ -11,32 +11,24 @@ allowedRole
 
 }){
 
-const token=
+const token =
 localStorage.getItem(
 "access"
 );
 
-const user=
+const user =
 JSON.parse(
-
 localStorage.getItem(
 "user"
-)
+) || "{}");
 
-);
-
-if(
-
-!token ||
-
-!user
-
-){
+if(!token){
 
 return(
 
 <Navigate
 to="/login"
+replace
 />
 
 );
@@ -45,10 +37,9 @@ to="/login"
 
 if(
 
-user.role
-!==
+allowedRole &&
 
-allowedRole
+user.role !== allowedRole
 
 ){
 
@@ -56,6 +47,7 @@ return(
 
 <Navigate
 to="/"
+replace
 />
 
 );

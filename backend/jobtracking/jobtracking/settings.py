@@ -76,6 +76,8 @@ CORS_ALLOWED_ORIGINS=[
 
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 ROOT_URLCONF = 'jobtracking.urls'
 
 TEMPLATES = [

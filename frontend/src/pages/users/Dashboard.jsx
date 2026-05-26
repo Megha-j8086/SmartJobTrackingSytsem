@@ -1,39 +1,255 @@
+import React, {
+useEffect,
+useState
+} from "react";
+
 import {
 useNavigate
 } from "react-router-dom";
 
+import API from "../../api/api";
+
 import "../../styles/Dashboard.css";
-
-const jobs=[
-
-{
-company:"Google",
-role:"Frontend Developer",
-status:"Interview"
-},
-
-{
-company:"Amazon",
-role:"Backend Developer",
-status:"Applied"
-},
-
-{
-company:"Microsoft",
-role:"Python Developer",
-status:"Rejected"
-}
-
-];
 
 function Dashboard(){
 
 const navigate=
 useNavigate();
 
+
+const[
+stats,
+setStats
+]=useState({
+
+total:0,
+applied:0,
+interview:0,
+rejected:0
+
+});
+
+
+const[
+profile,
+setProfile
+]=useState({
+
+phone:"",
+linkedin:"",
+experience:"",
+resume:null
+
+});
+
+
+const[
+jobs,
+setJobs
+]=useState([]);
+
+
+
+useEffect(()=>{
+
+loadApplications();
+
+loadProfile();
+
+},[]);
+
+
+
+/* ------------------
+LOAD APPLICATIONS
+------------------- */
+
+const loadApplications=
+async()=>{
+
+try{
+
+const res=
+await API.get(
+"/my-applications/"
+);
+
+const data=
+res.data || [];
+
+setJobs(
+data
+);
+
+setStats({
+
+total:
+data.length,
+
+applied:
+data.filter(
+a=>
+
+a.status==="pending" ||
+
+a.status==="applied"
+
+).length,
+
+interview:
+data.filter(
+a=>
+
+a.status==="review" ||
+
+a.status==="interview"
+
+).length,
+
+rejected:
+data.filter(
+a=>
+
+a.status==="rejected"
+
+).length
+
+});
+
+}
+
+catch(err){
+
+console.log(
+err.response?.data
+);
+
+}
+
+};
+
+
+
+/* ------------------
+LOAD PROFILE
+------------------- */
+
+const loadProfile=
+async()=>{
+
+try{
+
+const res=
+await API.get(
+"/profile/"
+);
+
+setProfile(
+
+res.data
+
+);
+
+}
+
+catch(err){
+
+console.log(
+err.response?.data
+);
+
+}
+
+};
+
+
+
+/* ------------------
+PROFILE %
+------------------- */
+
+const calculateProfileProgress=
+()=>{
+
+const fields=[
+
+profile.phone,
+
+profile.linkedin,
+
+profile.experience,
+
+profile.resume
+
+];
+
+const filled=
+fields.filter(
+
+f=>
+
+f!==null &&
+f!==undefined &&
+f!==""
+
+).length;
+
+return Math.round(
+
+(filled/fields.length)
+
+*100
+
+);
+
+};
+
+
+const profileProgress=
+calculateProfileProgress();
+
+
+
+/* ------------------
+APPLICATION %
+------------------- */
+
+const applicationProgress=
+
+stats.total===0
+
+?
+
+0
+
+:
+
+Math.round(
+
+(
+
+stats.applied+
+
+stats.interview
+
+)
+
+/
+
+stats.total
+
+*
+
+100
+
+);
+
+
+
 return(
 
 <div className="dashboard">
+
 
 {/* SIDEBAR */}
 
@@ -45,6 +261,7 @@ SMART JOB
 
 </h2>
 
+
 <ul>
 
 <li>
@@ -53,15 +270,19 @@ SMART JOB
 
 </li>
 
+
 <li
 onClick={()=>
-navigate("/jobs")
+navigate(
+"/jobs"
+)
 }
 >
 
 Jobs
 
 </li>
+
 
 <li
 onClick={()=>
@@ -75,6 +296,7 @@ Applications
 
 </li>
 
+
 <li
 onClick={()=>
 navigate(
@@ -83,9 +305,11 @@ navigate(
 }
 >
 
-👤 Profile
+Profile
 
 </li>
+
+
 <li>
 
 ⚙ Settings
@@ -95,6 +319,8 @@ navigate(
 </ul>
 
 </div>
+
+
 
 {/* CONTENT */}
 
@@ -106,13 +332,20 @@ Welcome Back 👋
 
 </h1>
 
+
+
 {/* STATS */}
 
 <div className="cards">
 
+
 <div className="card">
 
-<h2>24</h2>
+<h2>
+
+{stats.total}
+
+</h2>
 
 <p>
 
@@ -122,9 +355,14 @@ Total Applications
 
 </div>
 
+
 <div className="card">
 
-<h2>15</h2>
+<h2>
+
+{stats.applied}
+
+</h2>
 
 <p>
 
@@ -134,9 +372,14 @@ Applied
 
 </div>
 
+
 <div className="card">
 
-<h2>6</h2>
+<h2>
+
+{stats.interview}
+
+</h2>
 
 <p>
 
@@ -146,9 +389,14 @@ Interviews
 
 </div>
 
+
 <div className="card">
 
-<h2>3</h2>
+<h2>
+
+{stats.rejected}
+
+</h2>
 
 <p>
 
@@ -158,37 +406,48 @@ Rejected
 
 </div>
 
+
 </div>
 
-{/* ANALYTICS */}
+
+
+{/* APPLICATION PROGRESS */}
 
 <div className="analytics">
 
 <h2>
 
-Application Analytics
+Application Progress
 
 </h2>
+
 
 <div className="progress">
 
 <div
+
 style={{
-width:"80%"
+width:
+`${applicationProgress}%`
 }}
+
 ></div>
 
 </div>
 
+
 <p>
 
-80% Progress
+{applicationProgress}% Progress
 
 </p>
 
 </div>
 
-{/* RECENT */}
+
+
+
+{/* RECENT APPLICATIONS */}
 
 <div className="jobs">
 
@@ -198,14 +457,30 @@ Recent Applications
 
 </h2>
 
+
 {
 
-jobs.map(
+jobs.length===0
 
-(job,index)=>(
+?
+
+<p>
+
+No applications yet
+
+</p>
+
+:
+
+jobs.slice(
+0,
+5
+).map(
+
+(job)=>(
 
 <div
-key={index}
+key={job.id}
 className="job"
 >
 
@@ -213,21 +488,51 @@ className="job"
 
 <h3>
 
-{job.role}
+{
+
+job.job?.title ||
+
+job.job_title ||
+
+"Untitled Job"
+
+}
 
 </h3>
 
+
 <p>
 
-{job.company}
+{
+
+job.job?.company ||
+
+job.company ||
+
+"Unknown Company"
+
+}
 
 </p>
 
 </div>
 
+
 <span>
 
-{job.status}
+{
+
+job.status==="pending"
+
+?
+
+"Applied"
+
+:
+
+job.status
+
+}
 
 </span>
 
@@ -241,7 +546,10 @@ className="job"
 
 </div>
 
-{/* PROFILE */}
+
+
+
+{/* PROFILE PROGRESS */}
 
 <div className="profile">
 
@@ -251,30 +559,69 @@ Profile Completion
 
 </h2>
 
+
 <div className="progress">
 
 <div
+
 style={{
-width:"65%"
+width:
+`${profileProgress}%`
 }}
+
 ></div>
 
 </div>
 
+
 <p>
 
-65% Completed
+{profileProgress}% Completed
 
 </p>
 
-</div>
 
-</div>
+<button
 
-</div>
+className="profile-btn"
 
+onClick={()=>
+
+navigate(
+"/profile"
 )
 
 }
 
-export default Dashboard
+>
+
+{
+
+profileProgress===100
+
+?
+
+"Edit Profile"
+
+:
+
+"Complete Profile"
+
+}
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+</div>
+
+);
+
+}
+
+export default Dashboard;

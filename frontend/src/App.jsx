@@ -123,6 +123,7 @@ element={
 }
 />
 
+
 {/* ADMIN PROTECTED ROUTES */}
 <Route
 path="/admin"

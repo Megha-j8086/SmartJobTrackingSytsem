@@ -125,10 +125,20 @@ class ProfileView(APIView):
         return Response({
 
             "username":user.username,
+
             "email":user.email,
+
             "role":user.role,
+
             "phone":user.phone,
+
             "linkedin":user.linkedin,
-            "experience":user.experience
+
+            "experience":user.experience,
+
+            "resume":
+            user.resume.url
+            if user.resume
+            else None
 
         })

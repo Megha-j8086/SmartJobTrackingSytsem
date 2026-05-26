@@ -25,62 +25,60 @@ password,
 setPassword
 ]=useState("");
 
+const[
+loading,
+setLoading
+]=useState(false);
+
+
+
 const login=
 async()=>{
 
 try{
 
+setLoading(true);
+
+/* LOGIN */
+
 const res=
 await API.post(
-
 "/login/",
-
 {
-
 username,
 password
-
 }
-
 );
 
-localStorage.setItem(
+/* SAVE TOKENS */
 
+localStorage.setItem(
 "access",
-
 res.data.access
-
 );
 
 localStorage.setItem(
-
 "refresh",
-
 res.data.refresh
-
 );
+
+
+/* GET PROFILE */
 
 const profile=
 await API.get(
-
 "/profile/",
-
 {
-
 headers:{
-
 Authorization:
-
 `Bearer ${res.data.access}`
-
 }
-
 }
-
 );
 
-localStorage.setItem(
+/* SAVE USER */
 
+localStorage.setItem(
 "user",
 
 JSON.stringify(
@@ -89,54 +87,70 @@ profile.data
 
 );
 
-alert(
-"Login Success"
+console.log(
+"PROFILE →",
+profile.data
 );
 
-if(
-profile.data.role==="user"
-){
+
+/* NAVIGATION */
+
+const role=
+profile?.data?.role;
+
+if(role==="user"){
 
 navigate(
-"/dashboard"
+"/dashboard",
+{
+replace:true
+}
 );
 
 return;
 
 }
 
-if(
-profile.data.role==="recruiter"
-){
+if(role==="recruiter"){
 
 navigate(
-"/recruiter"
+"/recruiter",
+{
+replace:true
+}
 );
 
 return;
 
 }
 
-if(
-profile.data.role==="admin"
-){
+if(role==="admin"){
 
 navigate(
-"/admin"
+"/admin",
+{
+replace:true
+}
 );
 
 return;
 
 }
 
-navigate("/");
+/* FALLBACK */
+
+navigate(
+"/",
+{
+replace:true
+}
+);
 
 }
-
 catch(error){
 
 console.log(
-error.response?.data
+error?.response?.data
 );
 
 alert(
@@ -144,8 +158,15 @@ alert(
 );
 
 }
+finally{
+
+setLoading(false);
+
+}
 
 };
+
+
 
 return(
 
@@ -159,17 +180,20 @@ Login
 
 </h1>
 
+
 <input
 type="text"
 placeholder="Username"
 value={username}
 onChange={
 (e)=>
+
 setUsername(
 e.target.value
 )
 }
 />
+
 
 <input
 type="password"
@@ -177,19 +201,35 @@ placeholder="Password"
 value={password}
 onChange={
 (e)=>
+
 setPassword(
 e.target.value
 )
 }
 />
 
+
 <button
 onClick={login}
+disabled={loading}
 >
 
-Login
+{
+
+loading
+
+?
+
+"Logging..."
+
+:
+
+"Login"
+
+}
 
 </button>
+
 
 <p>
 

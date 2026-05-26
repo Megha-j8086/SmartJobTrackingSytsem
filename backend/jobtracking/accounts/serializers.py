@@ -42,3 +42,18 @@ serializers.ModelSerializer
         role=validated_data["role"]
 
         )
+
+# PROFILE SERIALIZER
+class ProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+
+        fields = [
+            "username",
+            "email",
+            "phone",
+            "linkedin",
+            "experience",
+            "resume"
+        ]

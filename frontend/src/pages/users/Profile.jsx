@@ -1,6 +1,9 @@
-import React,{
+import React, {
+useEffect,
 useState
 } from "react";
+
+import API from "../../api/api";
 
 import "../../styles/Profile.css";
 
@@ -11,32 +14,57 @@ profile,
 setProfile
 ]=useState({
 
-name:"John Doe",
-
-email:"john@gmail.com",
-
-phone:"9876543210",
-
-skills:"React, Django",
-
-experience:"2 Years",
-
-linkedin:"linkedin.com/in/john",
-
-bio:"Frontend and Python Developer",
-
+username:"",
+email:"",
+phone:"",
+linkedin:"",
+experience:"",
 resume:null
 
 });
 
+useEffect(()=>{
+
+loadProfile();
+
+},[]);
+
+
+/* LOAD PROFILE */
+const loadProfile=
+async()=>{
+
+try{
+
+const res=
+await API.get(
+"/profile/"
+);
+
+setProfile(
+res.data
+);
+
+}
+
+catch(err){
+
+console.log(
+err.response?.data
+);
+
+}
+
+};
+
+
+/* CHANGE INPUT */
 const change=(e)=>{
 
 const{
-
 name,
 value,
 files
-
 }=e.target;
 
 setProfile({
@@ -44,22 +72,137 @@ setProfile({
 ...profile,
 
 [name]:
-
 files
 ? files[0]
 : value
 
-})
+});
 
 };
 
-const update=()=>{
+
+/* SAVE PROFILE */
+const update=
+async()=>{
+
+try{
+
+const form=
+new FormData();
+
+Object.keys(
+profile
+).forEach(
+
+(key)=>{
+
+if(
+profile[key]
+!==null
+){
+
+form.append(
+key,
+profile[key]
+);
+
+}
+
+}
+
+);
+
+await API.put(
+
+"/profile/",
+form,
+
+{
+
+headers:{
+
+"Content-Type":
+"multipart/form-data"
+
+}
+
+}
+
+);
 
 alert(
-"Profile Updated Successfully"
+"Profile Updated"
+);
+
+loadProfile();
+
+}
+
+catch(err){
+
+console.log(
+err.response?.data
+);
+
+alert(
+"Update Failed"
+);
+
+}
+
+};
+
+
+/* PROGRESS */
+const calculate=()=>{
+
+const fields=[
+
+"profile",
+
+"profile",
+
+"profile"
+
+];
+
+const values=[
+
+profile.phone,
+
+profile.linkedin,
+
+profile.experience,
+
+profile.resume
+
+];
+
+let filled=0;
+
+values.forEach(
+
+(v)=>{
+
+if(v)
+filled++;
+
+}
+
+);
+
+return Math.round(
+
+(filled/values.length)
+*100
+
 );
 
 };
+
+const progress=
+calculate();
+
 
 return(
 
@@ -75,52 +218,116 @@ My Profile
 
 <div className="avatar">
 
-👤
+{
+profile.username
+?.charAt(0)
+|| "U"
+}
 
 </div>
 
-<input
-name="name"
-value={profile.name}
-onChange={change}
-/>
+
+<div className="progress-bar">
+
+<div
+
+style={{
+width:
+`${progress}%`
+}}
+
+></div>
+
+</div>
+
+<p>
+
+{progress}% Completed
+
+</p>
+
 
 <input
+
+name="username"
+
+value={
+profile.username
+}
+
+disabled
+
+/>
+
+
+<input
+
 name="email"
-value={profile.email}
-onChange={change}
+
+value={
+profile.email
+}
+
+disabled
+
 />
 
+
 <input
+
 name="phone"
-value={profile.phone}
-onChange={change}
+
+value={
+profile.phone
+|| ""
+}
+
+onChange={
+change
+}
+
+placeholder="Phone"
+
 />
 
-<input
-name="skills"
-value={profile.skills}
-onChange={change}
-/>
 
 <input
-name="experience"
-value={profile.experience}
-onChange={change}
-/>
 
-<input
 name="linkedin"
-value={profile.linkedin}
-onChange={change}
+
+value={
+profile.linkedin
+|| ""
+}
+
+onChange={
+change
+}
+
+placeholder="LinkedIn"
+
 />
 
-<textarea
-name="bio"
-rows="4"
-value={profile.bio}
-onChange={change}
+
+<input
+
+type="number"
+
+name="experience"
+
+value={
+profile.experience
+|| ""
+}
+
+onChange={
+change
+}
+
+placeholder="Experience"
+
 />
+
 
 <label>
 
@@ -129,13 +336,22 @@ Upload Resume
 </label>
 
 <input
+
 type="file"
+
 name="resume"
-onChange={change}
+
+onChange={
+change
+}
+
 />
 
+
 <button
-onClick={update}
+onClick={
+update
+}
 >
 
 Update Profile
@@ -146,8 +362,8 @@ Update Profile
 
 </div>
 
-)
+);
 
 }
 
-export default Profile
+export default Profile;
