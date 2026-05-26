@@ -1,20 +1,49 @@
+/* =========================
+MAIN LAYOUT
+========================= */
+
 .recruiter{
-
 display:flex;
-
 min-height:100vh;
-
+background:white;
+font-family:Arial,sans-serif;
 }
+
+
+/* =========================
+SIDEBAR
+========================= */
 
 .left{
 
-width:250px;
+width:260px;
 
-background:#111827;
+background:
+linear-gradient(
+180deg,
+#0f172a,
+#1e293b
+);
 
 color:white;
 
-padding:40px;
+padding:40px 25px;
+
+position:fixed;
+
+left:0;
+top:0;
+bottom:0;
+
+}
+
+.left h2{
+
+font-size:28px;
+
+margin-bottom:50px;
+
+font-weight:700;
 
 }
 
@@ -22,17 +51,54 @@ padding:40px;
 
 list-style:none;
 
+padding:0;
+
+margin:0;
+
 }
 
 .left li{
 
-padding:20px;
+padding:16px 20px;
+
+margin-bottom:12px;
+
+border-radius:12px;
 
 cursor:pointer;
 
+transition:.3s;
+
+font-size:16px;
+
 }
 
+.left li:hover{
+
+background:
+
+rgba(
+255,
+255,
+255,
+0.08
+);
+
+transform:
+translateX(
+6px
+);
+
+}
+
+
+/* =========================
+CONTENT
+========================= */
+
 .right{
+
+margin-left:260px;
 
 flex:1;
 
@@ -40,26 +106,336 @@ padding:50px;
 
 }
 
+.right h1{
+
+font-size:42px;
+
+color:#111827;
+
+margin-bottom:35px;
+
+}
+
+
+/* =========================
+CARDS
+========================= */
+
 .cards{
 
 display:grid;
 
 grid-template-columns:
-repeat(
-3,
-1fr
-);
 
-gap:20px;
+repeat(
+auto-fit,
+minmax(
+240px,
+1fr
+));
+
+gap:24px;
 
 }
 
-.cards div{
 
-background:white;
 
-padding:40px;
+/* COMMON CARD */
 
-border-radius:20px;
+.cards>div{
+
+padding:32px;
+
+border-radius:22px;
+
+color:white;
+
+min-height:180px;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+box-shadow:
+
+0 12px 35px
+rgba(
+0,
+0,
+0,
+0.08
+);
+
+transition:.3s;
+
+}
+
+.cards>div:hover{
+
+transform:
+
+translateY(
+-8px
+);
+
+}
+
+
+
+/* NUMBER */
+
+.cards h2{
+
+font-size:56px;
+
+margin:0;
+
+font-weight:800;
+
+}
+
+
+
+/* LABEL */
+
+.cards p{
+
+margin-top:12px;
+
+font-size:18px;
+
+opacity:.95;
+
+}
+
+
+
+/* CARD COLORS */
+
+.jobs{
+
+background:
+
+linear-gradient(
+135deg,
+#4f46e5,
+#6366f1
+);
+
+}
+
+.apps{
+
+background:
+
+linear-gradient(
+135deg,
+#0891b2,
+#06b6d4
+);
+
+}
+
+.interview{
+
+background:
+
+linear-gradient(
+135deg,
+#f59e0b,
+#fbbf24
+);
+
+}
+
+.accepted{
+
+background:
+
+linear-gradient(
+135deg,
+#10b981,
+#34d399
+);
+
+}
+
+.rejected{
+
+background:
+
+linear-gradient(
+135deg,
+#ef4444,
+#fb7185
+);
+
+}
+
+
+/* =========================
+BUTTONS
+========================= */
+
+.actions{
+
+margin-top:45px;
+
+display:flex;
+
+gap:18px;
+
+flex-wrap:wrap;
+
+}
+
+.actions button{
+
+border:none;
+
+padding:16px 28px;
+
+border-radius:14px;
+
+cursor:pointer;
+
+font-size:16px;
+
+font-weight:700;
+
+color:white;
+
+background:
+
+linear-gradient(
+135deg,
+#2563eb,
+#4338ca
+);
+
+transition:.3s;
+
+}
+
+.actions button:hover{
+
+transform:
+
+translateY(
+-3px
+);
+
+box-shadow:
+
+0 10px 25px
+rgba(
+37,
+99,
+235,
+0.3
+);
+
+}
+
+
+/* =========================
+LOADING
+========================= */
+
+.right p{
+
+font-size:18px;
+
+color:#64748b;
+
+}
+.left li{
+
+padding:18px 20px;
+
+margin-bottom:12px;
+
+cursor:pointer;
+
+border-radius:14px;
+
+transition:.3s;
+
+font-size:16px;
+
+font-weight:600;
+
+}
+
+
+.left li:hover{
+
+background:
+
+rgba(
+255,
+255,
+255,
+0.12
+);
+
+transform:
+
+translateX(
+8px
+);
+
+}
+
+
+.left li:active{
+
+background:
+
+#4f46e5;
+
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:900px){
+
+.recruiter{
+
+flex-direction:column;
+
+}
+
+.left{
+
+position:relative;
+
+width:100%;
+
+}
+
+.right{
+
+margin-left:0;
+
+padding:30px;
+
+}
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+.actions{
+
+flex-direction:column;
+
+}
 
 }

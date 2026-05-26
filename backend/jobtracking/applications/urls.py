@@ -4,7 +4,9 @@ from .views import (
     MyApplicationsView,
     RecruiterApplicantsView,
     UpdateStatusView,
-    DashboardStatsView
+    DashboardStatsView,
+    RecruiterStatsView,
+    ScheduleInterviewView
 )
 
 urlpatterns = [
@@ -13,4 +15,7 @@ urlpatterns = [
     path("applicants/", RecruiterApplicantsView.as_view()),
     path("status/<int:id>/", UpdateStatusView.as_view()),
     path("dashboard-stats/", DashboardStatsView.as_view()),
+    path("recruiter-stats/",RecruiterStatsView.as_view()),
+    path("schedule-interview/<int:id>/",ScheduleInterviewView.as_view()),
+
 ]

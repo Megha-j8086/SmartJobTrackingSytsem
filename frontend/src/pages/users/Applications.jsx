@@ -1,100 +1,443 @@
-import React, { useEffect, useState } from "react";
+import React, {
+useEffect,
+useState
+} from "react";
+
 import API from "../../api/api";
+
 import "../../styles/Applications.css";
 
-function Applications() {
-  const [applications, setApplications] = useState([]);
+function Applications(){
 
-  const [stats, setStats] = useState({
-    total: 0,
-    applied: 0,
-    interview: 0,
-    rejected: 0,
-  });
+const[
+applications,
+setApplications
+]=useState([]);
 
-  useEffect(() => {
-    loadApplications();
-  }, []);
+const[
+stats,
+setStats
+]=useState({
 
-  const loadApplications = async () => {
-    try {
-      const res = await API.get("/my-applications/");
-      const data = res.data;
+total:0,
+applied:0,
+interview:0,
+rejected:0
 
-      setApplications(data);
+});
 
-      // 🔥 COUNT LOGIC
-      const total = data.length;
-      const applied = data.filter(a => a.status === "pending").length;
-      const interview = data.filter(a => a.status === "review").length;
-      const rejected = data.filter(a => a.status === "rejected").length;
 
-      setStats({ total, applied, interview, rejected });
+useEffect(()=>{
 
-    } catch (error) {
-      console.log(error.response?.data);
-    }
-  };
+loadApplications();
 
-  const getClass = (status) => {
-    if (status === "pending") return "applied";
-    if (status === "review") return "interview";
-    if (status === "rejected") return "rejected";
-    return "selected";
-  };
+},[]);
 
-  return (
-    <div className="apps">
 
-      <h1>My Applications</h1>
-      <p>Track your job progress</p>
 
-      {/* 🔥 NEW: TOTAL APPLIED MESSAGE */}
-      <div className="summary-box">
-        You have already applied to <b>{stats.total}</b> jobs
-      </div>
+const loadApplications=
+async()=>{
 
-      {/* ANALYTICS */}
-      <div className="analytics-cards">
-        <div className="card">Total: {stats.total}</div>
-        <div className="card">Applied: {stats.applied}</div>
-        <div className="card">Interview: {stats.interview}</div>
-        <div className="card">Rejected: {stats.rejected}</div>
-      </div>
+try{
 
-      {/* TABLE */}
-      <div className="table">
-        <div className="head">
-          <span>Job</span>
-          <span>Company</span>
-          <span>Status</span>
-        </div>
+const res=
+await API.get(
+"/my-applications/"
+);
 
-        {applications.length === 0 ? (
-          <div className="empty">No Applications Found</div>
-        ) : (
-            applications.map((app) => (
-            <div key={app.id} className="row">
+const data=
+res.data || [];
 
-                <span>
-                {app.job_title || app.job?.title || app.job}
-                </span>
+setApplications(
+data
+);
 
-                <span>
-                {app.company || app.job?.company}
-                </span>
 
-                <span className={getClass(app.status)}>
-                {app.status}
-                </span>
+/* ANALYTICS */
 
-            </div>
-            ))
-             
-        )}
-      </div>
-    </div>
-  );
+setStats({
+
+total:
+data.length,
+
+applied:
+data.filter(
+a=>
+
+a.status==="pending" ||
+
+a.status==="applied"
+
+).length,
+
+interview:
+data.filter(
+a=>
+
+a.status==="review" ||
+
+a.status==="interview"
+
+).length,
+
+rejected:
+data.filter(
+a=>
+
+a.status==="rejected"
+
+).length
+
+});
+
+}
+
+catch(error){
+
+console.log(
+error.response?.data
+);
+
+}
+
+};
+
+
+
+const getClass=
+(status)=>{
+
+if(
+
+status==="pending" ||
+
+status==="applied"
+
+)
+
+return "applied";
+
+
+if(
+
+status==="review" ||
+
+status==="interview"
+
+)
+
+return "interview";
+
+
+if(
+status==="rejected"
+)
+
+return "rejected";
+
+
+return "selected";
+
+};
+
+
+
+return(
+
+<div className="apps">
+
+<h1>
+
+My Applications
+
+</h1>
+
+<p>
+
+Track your applications
+
+</p>
+
+
+
+<div className="summary-box">
+
+You applied to
+
+<b>
+
+{" "}
+{stats.total}
+{" "}
+
+</b>
+
+jobs
+
+</div>
+
+
+
+<div className="analytics-cards">
+
+<div className="card total">
+
+<h3>
+
+{stats.total}
+
+</h3>
+
+<p>Total</p>
+
+</div>
+
+
+<div className="card applied">
+
+<h3>
+
+{stats.applied}
+
+</h3>
+
+<p>Applied</p>
+
+</div>
+
+
+<div className="card interview">
+
+<h3>
+
+{stats.interview}
+
+</h3>
+
+<p>Interview</p>
+
+</div>
+
+
+<div className="card rejected">
+
+<h3>
+
+{stats.rejected}
+
+</h3>
+
+<p>Rejected</p>
+
+</div>
+
+
+</div>
+
+
+
+<div className="table">
+
+<div className="head">
+
+<span>
+
+Job
+
+</span>
+
+<span>
+
+Company
+
+</span>
+
+<span>
+
+Status
+
+</span>
+
+<span>
+
+Interview
+
+</span>
+
+</div>
+
+
+
+{
+
+applications.length===0
+
+?
+
+<div className="empty">
+
+No Applications Found
+
+</div>
+
+:
+
+applications.map(
+
+(app)=>(
+
+<div
+key={app.id}
+className="row"
+>
+
+<span>
+
+{
+
+app.job_title ||
+
+app.job
+
+}
+
+</span>
+
+
+<span>
+
+{
+
+app.company
+
+||
+
+"Unknown"
+
+}
+
+</span>
+
+
+
+<span
+className={
+getClass(
+app.status
+)
+}
+>
+
+{
+
+app.status==="pending"
+
+?
+
+"Applied"
+
+:
+
+app.status
+
+}
+
+</span>
+
+
+
+<span>
+
+{
+
+app.status==="interview"
+
+?
+
+<>
+
+<div>
+
+📅
+
+{
+
+app.interview_date
+
+||
+
+"Not Set"
+
+}
+
+</div>
+
+<div>
+
+⏰
+
+{
+
+app.interview_time
+
+||
+
+"Not Set"
+
+}
+
+</div>
+
+{
+
+app.interview_link && (
+
+<a
+
+href={
+app.interview_link
+}
+
+target="_blank"
+
+rel="noreferrer"
+
+className="join"
+
+>
+
+Join
+
+</a>
+
+)
+
+}
+
+</>
+
+:
+
+"-"
+
+}
+
+</span>
+
+</div>
+
+)
+
+)
+
+}
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default Applications;

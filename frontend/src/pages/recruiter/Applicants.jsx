@@ -15,27 +15,38 @@ setApps
 ]=useState([]);
 
 const[
-loading,
-setLoading
-]=useState(true);
+selected,
+setSelected
+]=useState(null);
 
-const load=
+const[
+form,
+setForm
+]=useState({
+
+interview_date:"",
+interview_time:"",
+interview_link:""
+
+});
+
+
+useEffect(()=>{
+
+loadApplicants();
+
+},[]);
+
+
+
+const loadApplicants=
 async()=>{
 
 try{
 
-setLoading(
-true
-);
-
 const res=
 await API.get(
 "/applicants/"
-);
-
-console.log(
-"Applicants:",
-res.data
 );
 
 setApps(
@@ -44,71 +55,53 @@ res.data
 
 }
 
-catch(error){
+catch(err){
 
 console.log(
-error.response?.data
-);
-
-alert(
-"Failed to load applicants"
-);
-
-}
-
-finally{
-
-setLoading(
-false
+err.response?.data
 );
 
 }
 
 };
 
-useEffect(()=>{
 
-load();
 
-},[]);
-
-const update=
-async(
-id,
-status
-)=>{
+const schedule=
+async()=>{
 
 try{
 
 await API.put(
 
-`/status/${id}/`,
+`/schedule-interview/${selected.id}/`,
 
-{
-
-status
-
-}
+form
 
 );
 
 alert(
-"Status Updated"
+"Interview Scheduled"
 );
 
-load();
+setSelected(
+null);
+
+loadApplicants();
 
 }
 
-catch(error){
+catch(err){
 
-alert(
-"Update Failed"
+console.log(
+err.response?.data
 );
 
 }
 
 };
+
+
 
 return(
 
@@ -120,31 +113,11 @@ Applicants
 
 </h1>
 
+
+
+<div className="table">
+
 {
-
-loading
-
-?
-
-<p>
-
-Loading...
-
-</p>
-
-:
-
-apps.length===0
-
-?
-
-<p>
-
-No Applicants Yet
-
-</p>
-
-:
 
 apps.map(
 
@@ -152,8 +125,10 @@ apps.map(
 
 <div
 key={app.id}
-className="card"
+className="row"
 >
+
+<div>
 
 <h3>
 
@@ -163,17 +138,23 @@ className="card"
 
 <p>
 
-Job:
 {app.job}
 
 </p>
 
-<p>
+</div>
 
-Status:
+
+
+<div>
+
+<span>
+
 {app.status}
 
-</p>
+</span>
+
+
 
 {
 
@@ -183,53 +164,157 @@ app.resume && (
 href={`http://127.0.0.1:8000${app.resume}`}
 target="_blank"
 rel="noreferrer"
+className="resume-btn"
 >
-
 View Resume
-
 </a>
-
 )
 
 }
 
-<div>
+</div>
+
+
 
 <button
+
 onClick={()=>
 
-update(
-app.id,
-"accepted"
+setSelected(
+app
 )
 
 }
+
 >
 
-Accept
+Schedule Interview
 
 </button>
 
-<button
-onClick={()=>
+</div>
 
-update(
-app.id,
-"rejected"
+)
+
 )
 
 }
+
+</div>
+
+
+
+{
+
+selected && (
+
+<div className="modal">
+
+<div className="box">
+
+<h2>
+
+Schedule Interview
+
+</h2>
+
+
+
+<input
+
+type="date"
+
+onChange={
+e=>
+
+setForm({
+
+...form,
+
+interview_date:
+e.target.value
+
+})
+
+}
+
+/>
+
+
+
+<input
+
+type="time"
+
+onChange={
+e=>
+
+setForm({
+
+...form,
+
+interview_time:
+e.target.value
+
+})
+
+}
+
+/>
+
+
+
+<input
+
+placeholder="Meet Link"
+
+onChange={
+e=>
+
+setForm({
+
+...form,
+
+interview_link:
+e.target.value
+
+})
+
+}
+
+/>
+
+
+
+<button
+onClick={schedule}
 >
 
-Reject
+Schedule
+
+</button>
+
+
+
+<button
+
+onClick={()=>
+
+setSelected(
+null
+)
+
+}
+
+>
+
+Cancel
 
 </button>
 
 </div>
 
 </div>
-
-)
 
 )
 

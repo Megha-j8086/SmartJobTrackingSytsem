@@ -39,6 +39,8 @@ import ManageUsers from "./pages/admin/ManageUsers";
 import ManageRecruiters from "./pages/admin/ManageRecruiters";
 import ManageApplications from "./pages/admin/ManageApplications";
 import Analytics from "./pages/admin/Analytics";
+import PostedJobs from "./pages/recruiter/PostedJobs";
+import ManageJobs from "./pages/recruiter/ManageJobs";
 
 function App(){
 
@@ -166,6 +168,23 @@ path="/analytics"
 element={
 <PrivateRoute allowedRole="admin">
 <Analytics/>
+</PrivateRoute>
+}
+/>
+<Route
+path="/posted-jobs"
+element={
+<PrivateRoute allowedRole="recruiter">
+<PostedJobs/>
+</PrivateRoute>
+}
+/>
+
+<Route
+path="/manage-jobs"
+element={
+<PrivateRoute allowedRole="recruiter">
+<ManageJobs/>
 </PrivateRoute>
 }
 />
