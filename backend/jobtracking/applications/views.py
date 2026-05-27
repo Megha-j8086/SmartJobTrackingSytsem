@@ -100,7 +100,12 @@ class RecruiterApplicantsView(APIView):
                 ),
 
                 "status":
-                app.status
+                app.status,
+
+                "recruiter_id": app.job.recruiter.id,
+                "company": app.job.company
+
+                
 
             })
 
@@ -394,3 +399,82 @@ class ScheduleInterviewView(APIView):
             app.status
 
         })
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from .models import Application
+
+
+class InterviewListView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        # ADMIN → show all
+        if request.user.role == "admin":
+
+            interviews = (
+                Application.objects
+                .filter(status="interview")
+                .select_related(
+                    "user",
+                    "job",
+                    "job__recruiter"
+                )
+            )
+
+        # RECRUITER → own only
+        else:
+
+            interviews = (
+                Application.objects
+                .filter(
+                    job__recruiter=request.user,
+                    status="interview"
+                )
+                .select_related(
+                    "user",
+                    "job"
+                )
+            )
+
+        data = []
+
+        for app in interviews:
+
+            data.append({
+
+                "id": app.id,
+
+                "username":
+                app.user.username,
+
+                "job":
+                app.job.title,
+
+                "company":
+                app.job.company,
+
+                "recruiter":
+                app.job.recruiter.username,
+
+                "date":
+                app.interview_date,
+
+                "time":
+                str(app.interview_time)
+                if app.interview_time
+                else None,
+
+                "link":
+                app.interview_link,
+
+                "status":
+                app.status
+
+            })
+
+        return Response(data)

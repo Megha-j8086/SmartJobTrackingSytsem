@@ -150,6 +150,9 @@ Posted Jobs
 
 </li>
 
+<li onClick={() => navigate("/interviews")}>Interviews
+</li>
+
 </ul>
 
 </div>

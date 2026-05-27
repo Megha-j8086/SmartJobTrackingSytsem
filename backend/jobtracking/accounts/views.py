@@ -142,3 +142,97 @@ class ProfileView(APIView):
             else None
 
         })
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+
+from accounts.models import User
+from jobs.models import Job
+from applications.models import Application
+from accounts.permissions import IsAdmin
+
+
+class AdminDashboardView(APIView):
+
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+
+        users = User.objects.filter(role="user").count()
+        recruiters = User.objects.filter(role="recruiter").count()
+        jobs = Job.objects.count()
+        applications = Application.objects.count()
+
+        return Response({
+            "users": users,
+            "recruiters": recruiters,
+            "jobs": jobs,
+            "applications": applications
+        })
+
+
+from accounts.permissions import IsAdmin
+class AdminUsersView(APIView):
+
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+
+        users = User.objects.all().values(
+            "id",
+            "username",
+            "email",
+            "role"
+        )
+
+        return Response(users)
+
+from django.shortcuts import get_object_or_404
+
+
+
+from accounts.permissions import IsAdmin
+class DeleteUserView(APIView):
+
+    permission_classes = [IsAdmin]
+
+    def delete(self, request, id):
+
+        user = get_object_or_404(User, id=id)
+        user.delete()
+
+        return Response({"message": "User deleted"})
+
+
+
+from accounts.permissions import IsAdmin
+class AdminJobsView(APIView):
+
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+
+        jobs = Job.objects.all().values(
+            "id",
+            "title",
+            "company",
+            "recruiter__username"
+        )
+
+        return Response(jobs)
+
+
+
+from accounts.permissions import IsAdmin
+class AdminDeleteJobView(APIView):
+
+    permission_classes = [IsAdmin]
+
+    def delete(self, request, id):
+
+        job = get_object_or_404(Job, id=id)
+        job.delete()
+
+        return Response({"message": "Job deleted"})

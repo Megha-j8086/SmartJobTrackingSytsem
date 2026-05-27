@@ -38,9 +38,12 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import ManageRecruiters from "./pages/admin/ManageRecruiters";
 import ManageApplications from "./pages/admin/ManageApplications";
-import Analytics from "./pages/admin/Analytics";
+import AdminManageJobs from "./pages/admin/AdminManageJobs";
 import PostedJobs from "./pages/recruiter/PostedJobs";
 import ManageJobs from "./pages/recruiter/ManageJobs";
+import Interviews from "./pages/recruiter/Interviews";
+import RecruiterDetails from "./pages/admin/RecruiterDetails";
+import AdminInterviews from "./pages/admin/AdminInterviews";
 
 function App(){
 
@@ -164,10 +167,10 @@ element={
 />
 
 <Route
-path="/analytics"
+path="/admin-managejobs"
 element={
 <PrivateRoute allowedRole="admin">
-<Analytics/>
+<AdminManageJobs/>
 </PrivateRoute>
 }
 />
@@ -188,6 +191,21 @@ element={
 </PrivateRoute>
 }
 />
+<Route
+path="/interviews"
+element={
+<PrivateRoute allowedRole="recruiter">
+<Interviews/>
+</PrivateRoute>
+}
+/>
+
+
+<Route path="/admin/recruiters/:id" element={<RecruiterDetails />} />
+
+<Route path="/admin-interviews" element={<AdminInterviews />} />
+
+
 
 </Routes>
 

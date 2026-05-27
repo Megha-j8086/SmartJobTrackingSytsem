@@ -1,268 +1,106 @@
-import {
-useNavigate
-}
-from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import API from "../../api/api";
 import "../../styles/AdminDashboard.css";
 
-/* DUMMY DATA */
+function AdminDashboard() {
 
-const users=[
+  const navigate = useNavigate();
 
-{name:"Alex"},
-{name:"John"},
-{name:"Sara"},
-{name:"Mike"}
+  const [stats, setStats] = useState({
+    users: 0,
+    recruiters: 0,
+    jobs: 0,
+    applications: 0
+  });
 
-];
+  const [loading, setLoading] = useState(true);
 
-const recruiters=[
+  useEffect(() => {
+    loadStats();
+  }, []);
 
-{name:"Google"},
-{name:"Amazon"},
-{name:"Microsoft"}
+  const loadStats = async () => {
+    try {
+      const res = await API.get("/admin/dashboard/");
+      setStats(res.data);
+    } catch (err) {
+      console.log(err.response?.data);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-];
+  return (
+    <div className="admin-layout">
 
-const applications=[
+      {/* SIDEBAR */}
+      <div className="sidebar">
 
-{
-status:"Applied"
-},
+        <h2>Admin Panel</h2>
 
-{
-status:"Interview"
-},
+        <ul>
 
-{
-status:"Rejected"
-},
+          <li onClick={() => navigate("/admin")}>
+            📊 Dashboard
+          </li>
 
-{
-status:"Interview"
-},
+          <li onClick={() => navigate("/manage-users")}>
+             Manage Users
+          </li>
 
-{
-status:"Selected"
+          <li onClick={() => navigate("/manage-recruiters")}>
+             Manage Recruiters
+          </li>
+
+          <li onClick={() => navigate("/admin-managejobs")}>
+            Manage Jobs
+          </li>
+
+          <li onClick={() => navigate("/admin-interviews")}>
+            Interviews
+          </li>
+
+        </ul>
+
+      </div>
+
+      {/* CONTENT */}
+      <div className="admin-content">
+
+        <h1>Admin Dashboard</h1>
+
+        {loading ? (
+          <p>Loading dashboard...</p>
+        ) : (
+          <div className="cards">
+
+            <div className="card users">
+              <h2>{stats.users}</h2>
+              <p>Users</p>
+            </div>
+
+            <div className="card recruiters">
+              <h2>{stats.recruiters}</h2>
+              <p>Recruiters</p>
+            </div>
+
+            <div className="card jobs">
+              <h2>{stats.jobs}</h2>
+              <p>Jobs</p>
+            </div>
+
+            <div className="card apps">
+              <h2>{stats.applications}</h2>
+              <p>Applications</p>
+            </div>
+
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
 }
 
-];
-
-function AdminDashboard(){
-
-const navigate=
-useNavigate();
-
-/* LIVE COUNTS */
-
-const totalUsers=
-users.length;
-
-const totalRecruiters=
-recruiters.length;
-
-const totalApplications=
-applications.length;
-
-const totalInterviews=
-
-applications.filter(
-
-app=>
-
-app.status===
-"Interview"
-
-).length;
-
-return(
-
-<div className="admin">
-
-{/* SIDEBAR */}
-
-<div className="sidebar">
-
-<h2>
-
-ADMIN
-
-</h2>
-
-<ul>
-
-<li>
-
-Dashboard
-
-</li>
-
-<li
-onClick={()=>
-navigate(
-"/manage-users"
-)
-}
->
-
-Manage Users
-
-</li>
-
-<li
-onClick={()=>
-navigate(
-"/manage-recruiters"
-)
-}
->
-
-Manage Recruiters
-
-</li>
-
-<li
-onClick={()=>
-navigate(
-"/manage-applications"
-)
-}
->
-
-Applications
-
-</li>
-
-<li
-onClick={()=>
-navigate(
-"/analytics"
-)
-}
->
-
-Analytics
-
-</li>
-
-</ul>
-
-</div>
-
-{/* CONTENT */}
-
-<div className="content">
-
-<h1>
-
-Admin Dashboard
-
-</h1>
-
-<div className="cards">
-
-<div className="card">
-
-<h2>
-
-{totalUsers}
-
-</h2>
-
-<p>
-
-Total Users
-
-</p>
-
-</div>
-
-<div className="card">
-
-<h2>
-
-{totalRecruiters}
-
-</h2>
-
-<p>
-
-Recruiters
-
-</p>
-
-</div>
-
-<div className="card">
-
-<h2>
-
-{totalApplications}
-
-</h2>
-
-<p>
-
-Applications
-
-</p>
-
-</div>
-
-<div className="card">
-
-<h2>
-
-{totalInterviews}
-
-</h2>
-
-<p>
-
-Interviews
-
-</p>
-
-</div>
-
-</div>
-
-{/* RECENT */}
-
-<div className="recent">
-
-<h2>
-
-Recent Activity
-
-</h2>
-
-<p>
-
-✔ New user registered
-
-</p>
-
-<p>
-
-✔ Recruiter added job
-
-</p>
-
-<p>
-
-✔ Application submitted
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-)
-
-}
-
-export default AdminDashboard
+export default AdminDashboard;

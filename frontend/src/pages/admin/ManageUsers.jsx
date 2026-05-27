@@ -1,256 +1,81 @@
-import React,{
-useState
-}
-from "react";
+import React, { useEffect, useState } from "react";
+import API from "../../api/api";
+import "../../styles/AdminTable.css";
 
-import {
-useNavigate
-}
-from "react-router-dom";
+function ManageUsers() {
 
-import "../../styles/ManageUsers.css";
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-function ManageUsers(){
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
-const navigate=
-useNavigate();
+  const loadUsers = async () => {
+    try {
+      const res = await API.get("/admin/users/");
+      setUsers(res.data);
+    } catch (err) {
+      console.log(err.response?.data);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const[
-users,
-setUsers
-]=useState([
+  const deleteUser = async (id) => {
+    try {
+      await API.delete(`/admin/users/delete/${id}/`);
+      alert("User deleted");
+      loadUsers();
+    } catch (err) {
+      console.log(err.response?.data);
+    }
+  };
 
-{
-id:1,
-name:"Alex",
-role:"User"
-},
+  return (
+    <div className="table-page">
 
-{
-id:2,
-name:"John",
-role:"User"
-}
+      <h1>Manage Users</h1>
 
-]);
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <table>
 
-const[
-input,
-setInput
-]=useState("");
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Action</th>
+            </tr>
+          </thead>
 
-const[
-edit,
-setEdit
-]=useState(null);
+          <tbody>
+            {users.map(user => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
+                <td>
+                  <button
+                    className="delete"
+                    onClick={() => deleteUser(user.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
 
-const add=()=>{
+        </table>
+      )}
 
-if(!input)
-return;
-
-if(edit){
-
-setUsers(
-
-users.map(
-
-u=>
-
-u.id===edit
-
-?{
-...u,
-name:input
-}
-
-:u
-
-)
-
-);
-
-setEdit(null);
-
-}
-
-else{
-
-setUsers([
-
-...users,
-
-{
-
-id:
-Date.now(),
-
-name:input,
-
-role:"User"
-
+    </div>
+  );
 }
 
-]);
-
-}
-
-setInput("");
-
-};
-
-const remove=(id)=>{
-
-setUsers(
-
-users.filter(
-
-u=>
-
-u.id!==id
-
-)
-
-);
-
-};
-
-return(
-
-<div className="manage">
-
-<button
-className="back"
-onClick={()=>
-navigate(
-"/admin"
-)
-}
->
-
-← Back To Dashboard
-
-</button>
-
-<h1>
-
-Manage Users
-
-</h1>
-
-<div className="top">
-
-<input
-
-value={input}
-
-placeholder="Enter User"
-
-onChange={
-(e)=>
-
-setInput(
-e.target.value
-)
-
-}
-
-/>
-
-<button
-onClick={add}
->
-
-{
-edit
-?
-
-"Update"
-
-:
-
-"Add"
-
-}
-
-</button>
-
-</div>
-
-{
-
-users.map(
-
-(user)=>(
-
-<div
-key={user.id}
-className="box"
->
-
-<div>
-
-<h3>
-
-{user.name}
-
-</h3>
-
-<p>
-
-{user.role}
-
-</p>
-
-</div>
-
-<div>
-
-<button
-onClick={()=>{
-
-setEdit(
-user.id
-);
-
-setInput(
-user.name
-);
-
-}}
-
->
-
-Edit
-
-</button>
-
-<button
-onClick={()=>
-remove(
-user.id
-)
-}
->
-
-Delete
-
-</button>
-
-</div>
-
-</div>
-
-)
-
-)
-
-}
-
-</div>
-
-)
-
-}
-
-export default ManageUsers
+export default ManageUsers;

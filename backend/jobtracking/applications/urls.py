@@ -6,7 +6,8 @@ from .views import (
     UpdateStatusView,
     DashboardStatsView,
     RecruiterStatsView,
-    ScheduleInterviewView
+    ScheduleInterviewView,
+    InterviewListView
 )
 
 urlpatterns = [
@@ -17,5 +18,6 @@ urlpatterns = [
     path("dashboard-stats/", DashboardStatsView.as_view()),
     path("recruiter-stats/",RecruiterStatsView.as_view()),
     path("schedule-interview/<int:id>/",ScheduleInterviewView.as_view()),
+    path("interviews/",InterviewListView.as_view()),
 
 ]
