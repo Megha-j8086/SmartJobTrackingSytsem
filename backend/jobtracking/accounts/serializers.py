@@ -3,57 +3,94 @@ from .models import User
 
 
 class RegisterSerializer(
-serializers.ModelSerializer
+    serializers.ModelSerializer
 ):
 
-    password=serializers.CharField(
-    write_only=True
+    password = serializers.CharField(
+        write_only=True
     )
 
     class Meta:
 
-        model=User
+        model = User
 
-        fields=[
+        fields = [
 
-        "username",
+            "username",
 
-        "email",
+            "email",
 
-        "password",
+            "password",
 
-        "role"
+            "role"
 
         ]
 
     def create(
-    self,
-    validated_data
+
+        self,
+
+        validated_data
+
     ):
+
+        # BLOCK PUBLIC ADMIN CREATION
+
+        role = validated_data.get(
+            "role"
+        )
+
+        if role == "admin":
+
+            raise serializers.ValidationError({
+
+                "role":
+
+                "Admin registration is not allowed"
+
+            })
 
         return User.objects.create_user(
 
-        username=validated_data["username"],
+            username=
+            validated_data["username"],
 
-        email=validated_data["email"],
+            email=
+            validated_data["email"],
 
-        password=validated_data["password"],
+            password=
+            validated_data["password"],
 
-        role=validated_data["role"]
+            role=
+            role
 
         )
 
-# PROFILE SERIALIZER
-class ProfileSerializer(serializers.ModelSerializer):
+
+# ==========================
+# PROFILE
+# ==========================
+
+class ProfileSerializer(
+    serializers.ModelSerializer
+):
 
     class Meta:
+
         model = User
 
         fields = [
+
             "username",
+
             "email",
+
             "phone",
+
             "linkedin",
+
             "experience",
+
             "resume"
+
         ]

@@ -157,11 +157,6 @@ Recruiter
 
 </option>
 
-<option value="admin">
-
-Admin
-
-</option>
 
 </select>
 

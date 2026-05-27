@@ -116,25 +116,27 @@ from rest_framework.permissions import IsAuthenticated
 
 class ProfileView(APIView):
 
-    permission_classes=[IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-    def get(self,request):
+    def get(self, request):
 
-        user=request.user
+        user = request.user
 
         return Response({
 
-            "username":user.username,
+            "id": user.id,
 
-            "email":user.email,
+            "username": user.username,
 
-            "role":user.role,
+            "email": user.email,
 
-            "phone":user.phone,
+            "role": user.role,
 
-            "linkedin":user.linkedin,
+            "phone": user.phone,
 
-            "experience":user.experience,
+            "linkedin": user.linkedin,
+
+            "experience": user.experience,
 
             "resume":
             user.resume.url
