@@ -206,7 +206,7 @@ Jobs Posted
 </div>
 
 
-<div className="card apps">
+<div className="job-applications">
 
 <h2>
 

@@ -148,8 +148,6 @@ padding:32px;
 
 border-radius:22px;
 
-color:white;
-
 min-height:180px;
 
 display:flex;
@@ -193,7 +191,7 @@ font-size:56px;
 margin:0;
 
 font-weight:800;
-
+color: #000;
 }
 
 
@@ -206,7 +204,8 @@ margin-top:12px;
 
 font-size:18px;
 
-opacity:.95;
+
+color: black;
 
 }
 
@@ -215,62 +214,23 @@ opacity:.95;
 /* CARD COLORS */
 
 .jobs{
-
-background:
-
-linear-gradient(
-135deg,
-#4f46e5,
-#6366f1
-);
-
+   
+    margin-top: 4px;
 }
 
-.apps{
 
-background:
 
-linear-gradient(
-135deg,
-#0891b2,
-#06b6d4
-);
-
+.job-applications{
+ 
+  margin-top: 2px;
 }
 
-.interview{
 
-background:
 
-linear-gradient(
-135deg,
-#f59e0b,
-#fbbf24
-);
-
-}
-
-.accepted{
-
-background:
-
-linear-gradient(
-135deg,
-#10b981,
-#34d399
-);
-
-}
 
 .rejected{
 
-background:
-
-linear-gradient(
-135deg,
-#ef4444,
-#fb7185
-);
+margin-top: 4px;
 
 }
 
